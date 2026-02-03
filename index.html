@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recruitment Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-funnel"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <header>
+            <div class="header-content">
+                <h1><i class="fa-solid fa-chart-line"></i> Candidate Pipeline Dashboard</h1>
+                <div class="header-meta">
+                    <div class="select-wrapper">
+                        <i class="fa-solid fa-filter"></i>
+                        <select id="roleSelect">
+                            <option value="All">All Roles</option>
+                        </select>
+                    </div>
+                    <div class="refresh-controls">
+                        <span id="last-updated"><i class="fa-regular fa-clock"></i> Updating...</span>
+                        <button onclick="fetchData()" class="refresh-btn"><i class="fa-solid fa-rotate"></i></button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <!-- KPI Cards -->
+            <section class="kpi-grid" id="kpi-container">
+                <div class="kpi-card glass">
+                    <div class="icon-box info"><i class="fa-solid fa-users"></i></div>
+                    <div class="kpi-text">
+                        <h3>Total Candidates</h3>
+                        <p class="value" id="kpi-total">--</p>
+                    </div>
+                </div>
+                <div class="kpi-card glass">
+                    <div class="icon-box success"><i class="fa-solid fa-user-check"></i></div>
+                    <div class="kpi-text">
+                        <h3>Active Roles</h3>
+                        <p class="value" id="kpi-roles">--</p>
+                    </div>
+                </div>
+                <div class="kpi-card glass">
+                    <div class="icon-box warning"><i class="fa-solid fa-calendar-day"></i></div>
+                    <div class="kpi-text">
+                        <h3>Interviews Booked</h3>
+                        <p class="value" id="kpi-interviews">--</p>
+                    </div>
+                </div>
+                <div class="kpi-card glass">
+                    <div class="icon-box info"><i class="fa-solid fa-clipboard-question"></i></div>
+                    <div class="kpi-text">
+                        <h3>Total Interviewed</h3>
+                        <p class="value" id="kpi-total-interviewed">0</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts Section -->
+            <section class="charts-grid">
+                <div class="chart-card glass large" id="roleChartCard">
+                    <div class="card-header-flex">
+                        <h3>Candidate Interviews</h3>
+                        <div class="select-wrapper small">
+                            <select id="roleChartDateFilter">
+                                <!-- Populated with Dates -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="roleChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card glass" id="funnelChartCard">
+                    <div class="card-header-flex">
+                        <h3>Recruitment Funnel</h3>
+                        <div class="select-wrapper small">
+                            <select id="funnelDateFilter">
+                                <option value="Latest">Latest</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="funnelChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card glass full-width" id="distributionChartCard">
+                    <div class="card-header-flex">
+                        <h3>Pipeline Distribution Over Time</h3>
+                        <div id="statusToggles" class="status-toggles">
+                            <!-- Checkboxes injected by JS -->
+                        </div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="distributionChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Insights Section -->
+            <section class="insights-grid" id="insights-container">
+                <div class="kpi-card glass">
+                    <div class="icon-box accent"><i class="fa-solid fa-trophy"></i></div>
+                    <div class="kpi-text">
+                        <h3>Top Role (Volume)</h3>
+                        <p class="value" id="insight-top-role">--</p>
+                        <small id="insight-top-role-desc">Most active role</small>
+                    </div>
+                </div>
+                <div class="kpi-card glass">
+                    <div class="icon-box warning"><i class="fa-solid fa-star"></i></div>
+                    <div class="kpi-text">
+                        <h3>Best Conv. (New)</h3>
+                        <p class="value" id="insight-conv-new">--</p>
+                        <small id="insight-conv-new-desc">From New status</small>
+                    </div>
+                </div>
+                <div class="kpi-card glass">
+                    <div class="icon-box info"><i class="fa-solid fa-check-double"></i></div>
+                    <div class="kpi-text">
+                        <h3>Best Conv. (Review)</h3>
+                        <p class="value" id="insight-conv-review">--</p>
+                        <small id="insight-conv-review-desc">From Recruiter Review</small>
+                    </div>
+                </div>
+                <div class="kpi-card glass">
+                    <div class="icon-box success"><i class="fa-solid fa-bolt"></i></div>
+                    <div class="kpi-text">
+                        <h3>Weekly Growth</h3>
+                        <p class="value" id="insight-velocity">--</p>
+                        <small id="insight-velocity-desc">Vs last snapshot</small>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
